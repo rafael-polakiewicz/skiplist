@@ -8,7 +8,7 @@ int main() {
     skiplist *list;
     node *aux;
 
-    skiplist_init(list);
+    list = skiplist_init();
     printf("Insert:--------------------\n");
     for (i = 0; i < 5; i++) {
         skiplist_insert(list, i, arr[i]);
