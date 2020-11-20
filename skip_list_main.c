@@ -20,13 +20,13 @@ int main() {
     for (i = 0; i < 5; i++) {
         aux = skiplist_search(list, arr[i]);
         if (aux) {
-            printf("key = %d, value = %s\n", i, aux->word);
+            printf("key = %s, value = %s\n", arr[i], aux->word);
         } else {
             printf("key = %d, not fuound\n", arr[i]);
         }
     }
 
-    printf("Search:--------------------\n");
+    printf("Deleting: \"testando\" \"que\"\n-------------------------------\n");
     skiplist_delete(list, "testando");
     skiplist_delete(list, "que");
     skiplist_dump(list);

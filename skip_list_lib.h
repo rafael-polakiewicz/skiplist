@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 
+#define SMALLEST_WORD "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 #define SKIPLIST_MAX_LEVEL 6
 
 

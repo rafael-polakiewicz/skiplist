@@ -1,22 +1,20 @@
 #include "skip_list_lib.h"
 
+node * node_init(char *word, int level) {
+    node *new_node = malloc(sizeof(node));
+
+    new_node->word = word;
+    new_node->forward = (node **) malloc(sizeof(node *) * level + 1);
+    memset(new_node->forward, 0, sizeof(node *) * (level+1));
+
+    return new_node;
+}
+
 skiplist *skiplist_init() {
     int i;
     skiplist *list = malloc(sizeof(list));
-    node *header = (node *) malloc(sizeof(struct node));
-
-    list->header = header;
-    /*
-    =======================================================*/
-    header->key = 12367; 
-    // posso deletar???
-    /*
-    =======================================================*/
-    header->forward = (node **) malloc(sizeof(node*) * (SKIPLIST_MAX_LEVEL));
     
-    for (i = 0; i < SKIPLIST_MAX_LEVEL; i++) {
-        header->forward[i] = list->header;
-    }
+    list->header = node_init(SMALLEST_WORD, SKIPLIST_MAX_LEVEL);
     
     list->level = 0;
     list->size = 0;
@@ -34,39 +32,34 @@ int rand_level() {
 }
 
 int skiplist_insert(skiplist *list, int key, char* word) {
-    node *update[SKIPLIST_MAX_LEVEL];
-    node *aux = list->header;
+    node *update[SKIPLIST_MAX_LEVEL + 1];
+    node *current = list->header;
     int i, level;
 
+    memset(update, 0, sizeof(node*)*SKIPLIST_MAX_LEVEL+1);
+
     for (i = list->level; i >= 0; i--) {
-        while (aux->word != NULL && strcmp(aux->word, word) < 0)
-            aux = aux->forward[i];
-        update[i] = aux;
+        while (current->forward[i] != NULL && strcmp(current->forward[i]->word, word) < 0)
+            current = current->forward[i];
+        update[i] = current;
     }
-    aux = aux->forward[0];
+    current = current->forward[0];
 
-    if (aux->word != NULL && strcmp(aux->word, word) == 0) {
-        aux->word = word;
-        return 0;
-    } 
-    else {
+    if(current == NULL || strcmp(current->word, word) != 0) {
         level = rand_level();
-
+        
         if (level > list->level) {
             for (i = level; i > list->level; i--) {
                 update[i] = list->header;
             }
             list->level = level;
         }
-        aux = (node *) malloc(sizeof(node));
-        aux->forward = (node **) calloc(level, sizeof(node*));
 
-        aux->key = key;
-        aux->word = word;
-        
+        current = node_init(word, level);
+
         for (i = 0; i <= level; i++) {
-            aux->forward[i] = update[i]->forward[i];
-            update[i]->forward[i] = aux;
+            current->forward[i] = update[i]->forward[i];
+            update[i]->forward[i] = current;
         }
     }
 
@@ -74,16 +67,15 @@ int skiplist_insert(skiplist *list, int key, char* word) {
 }
 
 node *skiplist_search(skiplist *list, char *word) {
-    node *aux = list->header;
+    node *current = list->header->forward[list->level];
     int i;
 
     for (i = list->level; i >= 0; i--) {
-        // while (aux->forward[i]->key < key)
-        while(strcmp(aux->word, word) < 0)
-            aux = aux->forward[i];
+        while(current != NULL && strcmp(current->word, word) < 0)
+            current = current->forward[i];
     }
 
-    return aux;
+    return current;
 }
 
 void skiplist_node_free(node *list_node) {
@@ -96,17 +88,17 @@ void skiplist_node_free(node *list_node) {
 int skiplist_delete(skiplist *list, char *word) {
     int i;
     node *update[SKIPLIST_MAX_LEVEL];
-    node *aux;
+    node *current;
 
-    aux = skiplist_search(list, word);
+    current = skiplist_search(list, word);
 
-    if (strcmp(word, aux->word) == 0) {
+    if (current->word != NULL && strcmp(word, current->word) == 0) {
         for (i = 0; i < list->level; i++) {
-            if (update[i]->forward[i] != aux)
+            if (update[i]->forward[i] != current)
                 break;
-            update[i]->forward[0] = aux->forward[0];
+            update[i]->forward[0] = current->forward[0];
         }
-        skiplist_node_free(aux);
+        skiplist_node_free(current);
 
         while (list->level > 0 && 
                list->header->forward[list->level] == list->header)
@@ -119,11 +111,11 @@ int skiplist_delete(skiplist *list, char *word) {
 }
 
 void skiplist_dump(skiplist *list) {
-    node *aux = list->header;
+    node *current = list->header->forward[0];
 
-    while (aux && aux->forward[0] != list->header) {
-        printf("%d[%s]->", aux->forward[0]->key, aux->forward[0]->word);
-        aux = aux->forward[0];
+    while (current != NULL) {
+        printf("%d[%s]->", current->key, current->word);
+        current = current->forward[0];
     }
     printf("NIL\n");
 }
