@@ -2,13 +2,28 @@
 #include <string.h>
 #include <stdio.h>
 
+#define SMALLEST_WORD "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 #define SKIPLIST_MAX_LEVEL 6
+
+
+struct node {
+    int key;
+    char *word;
+    struct node **forward;
+};
+
+struct skiplist {
+    int level;
+    int size;
+    struct node *header;
+};
 
 typedef struct node node;
 
 typedef struct skiplist skiplist;
 
-skiplist *skiplist_init(skiplist *list);
+
+skiplist *skiplist_init();
 
 int rand_level();
 

@@ -8,7 +8,7 @@ int main() {
     skiplist *list;
     node *aux;
 
-    skiplist_init(list);
+    list = skiplist_init();
     printf("Insert:--------------------\n");
     for (i = 0; i < 5; i++) {
         skiplist_insert(list, i, arr[i]);
@@ -20,13 +20,13 @@ int main() {
     for (i = 0; i < 5; i++) {
         aux = skiplist_search(list, arr[i]);
         if (aux) {
-            printf("key = %d, value = %s\n", i, aux->word);
+            printf("key = %s, value = %s\n", arr[i], aux->word);
         } else {
             printf("key = %d, not fuound\n", arr[i]);
         }
     }
 
-    printf("Search:--------------------\n");
+    printf("Deleting: \"testando\" \"que\"\n-------------------------------\n");
     skiplist_delete(list, "testando");
     skiplist_delete(list, "que");
     skiplist_dump(list);
