@@ -3,18 +3,18 @@
 #include <stdio.h>
 
 #define SMALLEST_WORD "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+#define SKIP_LIST_HEADER_MEANING "a"
 #define SKIPLIST_MAX_LEVEL 6
 
 
 struct node {
-    int key;
-    char *word;
+    char meaning[140];
+    char word[50];
     struct node **forward;
 };
 
 struct skiplist {
     int level;
-    int size;
     struct node *header;
 };
 
@@ -27,12 +27,18 @@ skiplist *skiplist_init();
 
 int rand_level();
 
-int skiplist_insert(skiplist *, int, char *);
+int skiplist_insert(skiplist *, char *, char *);
 
-node *skiplist_search(skiplist *, char *);
+node *skiplist_search_by_word(skiplist *, char *);
+
+int skiplist_search_by_letter(skiplist *, char);
+
+int skiplist_word_meaning_change(skiplist *, char *, char *);
 
 void skiplist_node_free(node *);
 
-int skiplist_delete(skiplist *, char *);
+int skiplist_delete_by_word(skiplist *, char *);
 
 void skiplist_dump(skiplist *);
+
+void skiplist_free(skiplist **list);

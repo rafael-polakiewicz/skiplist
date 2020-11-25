@@ -4,7 +4,7 @@ run:
 	./exe
 
 compile:
-	gcc skip_list_lib.c skip_list_main.c -o exe
+	gcc skip_list_lib.c main.c -o exe
 
 clean:
 	find -name "*.o" | xargs rm -f {}
@@ -12,4 +12,4 @@ clean:
 	rm -f exe
 
 zip:
-	zip -r projeto_1 skip_list_lib.c skip_list_lib.h skip_list_main.c Makefile
+	zip -r projeto_1 skip_list_lib.c skip_list_lib.h main.c Makefile
